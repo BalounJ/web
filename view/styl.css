@@ -1,0 +1,12 @@
+/* nastaveni input v modalnich oknech */
+.modal input {
+    padding: 8px;
+    width: 100%;
+}
+
+/* nastaveni buttnu v modalnich oknech */
+.modal button {
+    margin: 8px 0;
+    padding: 8px;
+    width: 100%;
+}
