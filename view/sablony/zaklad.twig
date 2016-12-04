@@ -12,7 +12,9 @@
     <!-- JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- dodatečný styl -->
-    <link rel="stylesheet" href="view/styl.css">
+    <link rel="stylesheet" href="view/sablony/styl.css">
+
+    <script src="model/scripts/registerFormValidation.js"></script>
 
 </head>
 
@@ -45,7 +47,7 @@
     <!-- Modal up formular pro registraci -->
     <div class="modal fade" id="registerWindow" role="dialog">
         <div class="modal-dialog modal-lg">
-            <form class="modal-content animate" action="index.php?page={{ page }}" method="post">
+            <form name="registerForm" class="modal-content animate" action="index.php?page={{ page }}" onsubmit="return validateRegisterForm()" method="post">
                 <div class="modal-body">
                     <div class="form-group">
                         <label><b>Login</b></label>
@@ -53,7 +55,11 @@
                     </div>
                     <div class="form-group">
                         <label><b>Heslo</b></label>
-                        <input type="password" placeholder="Zadejte heslo" name="pass" required>
+                        <input type="password" oninput="checkRegisterForm()" placeholder="Zadejte heslo" name="pass" required>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Heslo pro kontrolu</b> <span id="passGlyph" class="glyphicon glyphicon-remove"></span></label>
+                        <input type="password" oninput="checkRegisterForm()" placeholder="Zadejte heslo pro kontrolu" name="pass2" required>
                     </div>
                     <div class="form-group">
                         <label><b>Jméno</b></label>
@@ -78,16 +84,13 @@
 
     <!-- Zahlavi -->
     <header class="jumbotron">
-        <h1>Ukázka Bootstrap</h1> aneb, jak si usnadnit vývoj front-endu..
+        <h1>WEB konference</h1> semestrálni práce z předmětu KIV/WEB..
     </header>
 
 
     <!-- menu -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">WebSiteName</a>
-            </div>
             <ul class="nav navbar-nav">
                 {% if page == "uvod" %}
                     <li class="active"><a href="index.php?page={{ page }}">Úvod</a></li>
@@ -103,7 +106,7 @@
                     <ul class="dropdown-menu">
                         <form action="index.php?page={{ page }}" method="post">
                             <input type="hidden" name="action" value="logout">
-                            <li><button type="submit">Odhlásit se</button></li>
+                            <li><button class="btn btn-danger btn-block" type="submit">Odhlásit se</button></li>
                         </form>
                     </ul>
                 </li>
@@ -127,21 +130,30 @@
         </div>
     {% endif %}
 
-
+    <div class="panel panel-default">
+        <div class="panel-body">
     {% block obsah %}
         {# zde bude obsah stranky, pokud nejaky bude #}
-        Vítejte.
+            <article>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1>{{ titulek }}</h1>
+                        Vítejte na stránkách webové konference. Tato stránka byla vytvořena ze studijních účelů.
+                    </div>
+                </div>
+            </article>
     {% endblock %}
-
-
-
-
-    <!-- Zapati -->
-    <footer class="row">
-        <div class="col-sm-12 text-center">
-            © 2016 Josef Baloun
         </div>
-    </footer>
+
+        <!-- Zapati -->
+        <div class="panel-footer">
+            <footer class="row">
+                <div class="col-sm-12 text-center">
+                    © 2016 Josef Baloun
+                </div>
+            </footer>
+        </div>
+    </div>
 </div>
 
 </body>

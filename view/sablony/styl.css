@@ -1,4 +1,8 @@
 /* nastaveni input v modalnich oknech */
+body {
+    padding-top: 10px;
+}
+
 .modal input {
     padding: 8px;
     width: 100%;

@@ -17,7 +17,7 @@ error_reporting(-1);
 include("settings.inc.php");
 
 /////// sprava prihlaseni uzivatele /////////
-include("prihlaseni.class.php"); // patricna trida
+include("model/prihlaseni.class.php"); // patricna trida
 $prihlaseni = new Prihlaseni;
 /////// info o prihlaseni pro controller a nasledne sablonu DRY /////////
 $prihlInfo = array();

@@ -2,5 +2,16 @@
 
 {# Prekryti bloku Obsah v predkovi #}
 {% block obsah %}
-    <h1>{{ titulek }}</h1>
+    <article>
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>{{ titulek }}</h1>
+                Vítejte na stránkách webové konference. Tato stránka byla vytvořena ze studijních účelů.
+            </div>
+            <div class="col-sm-6">
+                <h2>Návod k práci</h2>
+                Pro práci je třeba se registrovat. Poté získáte statut autora. Jako autor můžete číst schválené články a posílat články ke schválaní.
+            </div>
+        </div>
+    </article>
 {% endblock %}
