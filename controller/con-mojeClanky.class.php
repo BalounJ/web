@@ -6,7 +6,7 @@
  * Time: 15:49
  */
 
-class ConUvod {
+class ConMojeClanky {
 
     public function __construct() {
 
@@ -18,6 +18,12 @@ class ConUvod {
      */
     public function getResult($prihlInfo) {
 
+        if($prihlInfo["prihlasen"] != true) {
+            // uzivatel nema opravneni zobrazit stranku
+            header('Location: index.php');
+            die();
+        }
+
         $data = $prihlInfo;
       /*  $data["prihlasen"] = true;    prijde z indexu
         $data["login"] = "login";
@@ -27,11 +33,15 @@ class ConUvod {
       $data["page"] = "uvod";
       */
 
-        $data["titulek"] = "Úvod";
+        $data["titulek"] = "Moje články";
 
-        include("view/view-uvod.class.php");
+        include_once("model/mod-databaze.class.php");
+        $db = new Database();
+        $data["mojeClanky"] = $db->getClanky($prihlInfo["login"]);
+
+        include("view/view-mojeClanky.class.php");
         // predam data sablone a ziskam jejich vizualizaci
-        $html = ViewUvod::getTemplate($data);
+        $html = ViewMojeClanky::getTemplate($data);
         // vratim vysledny vzhled webu
         return $html;
     }

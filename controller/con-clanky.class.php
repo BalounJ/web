@@ -6,7 +6,7 @@
  * Time: 15:49
  */
 
-class ConUvod {
+class ConClanky {
 
     public function __construct() {
 
@@ -27,11 +27,16 @@ class ConUvod {
       $data["page"] = "uvod";
       */
 
-        $data["titulek"] = "Úvod";
+        $data["titulek"] = "Články";
 
-        include("view/view-uvod.class.php");
+        include_once("model/mod-databaze.class.php");
+        $db = new Database();
+
+        $data["schvaleneClanky"] = $db->getSchvaleneClanky();
+
+            include("view/view-clanky.class.php");
         // predam data sablone a ziskam jejich vizualizaci
-        $html = ViewUvod::getTemplate($data);
+        $html = ViewClanky::getTemplate($data);
         // vratim vysledny vzhled webu
         return $html;
     }

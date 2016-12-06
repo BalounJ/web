@@ -1,0 +1,100 @@
+{% extends "zaklad.twig" %}
+
+{# Prekryti bloku Obsah v predkovi #}
+{% block obsah %}
+    {% if prihlasen == true %}
+    <article>
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>{{ titulek }}</h1>
+                Zde můžete přidat nový článek, nebo zde naleznete přehled svých článků.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Přidat článek</h2>
+
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#uploadWindow">Klikněte pro otevření formuláře</button>
+
+                <!-- Modal up formular pro pridani clanku -->
+                <div class="modal fade" id="uploadWindow" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <form class="modal-content animate" action="uploadClanek.php" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label><b>Název příspěvku</b></label>
+                                    <input type="text" placeholder="Zadejte název příspěvku" name="nazev" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><b>Autoři</b></label>
+                                    <input type="text" placeholder="Zadejte autory" name="autori" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="abstract"><b>Abstract</b></label>
+                                    <textarea class="form-control" name="abstract" rows="5"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        <label><b>PDF</b></label>
+                                    </div>
+                                    <label class="btn btn-default btn-file">
+                                        Vybrat soubor <input name="pdf" type="file" id="pdf" accept="application/pdf" style="display: none;">
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-success" type=submit">Zaregistrovat se</button>
+                                <button class="btn btn-danger" type="button" data-dismiss="modal">Zrušit</button>
+                            </div>
+                            <input type="hidden" name="action" value="upload">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Přehled</h2>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h3>Info</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <h3>Abstract</h3>
+                        </div>
+                        <div class="col-sm-2">
+                            <h3>Akce</h3>
+                        </div>
+                    </div>
+
+                {% for clanek in mojeClanky %}
+                    <div class="row">
+                        <a class="clanek">
+
+                            <div class="col-sm-4">
+                                <h3>{{ clanek.nazev }}</h3>
+                                <h4>{{ clanek.autori }}</h4>
+                                Stav: {{ clanek.stav }}<br>
+                                Hodnocení: {{ clanek.hodnoceni }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ clanek.abstract }}
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-block btn-danger">Smazat</button>
+                                <button class="btn btn-block btn-info">Editovat</button>
+                                <button class="btn btn-block btn-success">Otevřít pdf</button>
+
+                            </div>
+                        </a>
+
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </article>
+    {% endif %}
+{% endblock %}

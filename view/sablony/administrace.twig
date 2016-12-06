@@ -1,0 +1,22 @@
+{% extends "zaklad.twig" %}
+
+{# Prekryti bloku Obsah v predkovi #}
+{% block obsah %}
+    {% if prihlasen == true %}
+    <article>
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>{{ titulek }}</h1>
+                Zde naleznete seznam příspěvků.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+
+
+
+            </div>
+        </div>
+    </article>
+    {% endif %}
+{% endblock %}

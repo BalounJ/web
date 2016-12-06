@@ -6,7 +6,7 @@
  * Time: 15:49
  */
 
-class ConUvod {
+class ConPosuzovani {
 
     public function __construct() {
 
@@ -18,6 +18,12 @@ class ConUvod {
      */
     public function getResult($prihlInfo) {
 
+        if($prihlInfo["prihlasen"] != true or ($prihlInfo["prava"] != "admin" and $prihlInfo["prava"] != "recenzent")) {
+            // uzivatel nema opravneni zobrazit stranku
+            header('Location: index.php');
+            die();
+        }
+
         $data = $prihlInfo;
       /*  $data["prihlasen"] = true;    prijde z indexu
         $data["login"] = "login";
@@ -27,11 +33,11 @@ class ConUvod {
       $data["page"] = "uvod";
       */
 
-        $data["titulek"] = "Úvod";
+        $data["titulek"] = "Moje recenze";
 
-        include("view/view-uvod.class.php");
+        include("view/view-posuzovani.class.php");
         // predam data sablone a ziskam jejich vizualizaci
-        $html = ViewUvod::getTemplate($data);
+        $html = ViewPosuzovani::getTemplate($data);
         // vratim vysledny vzhled webu
         return $html;
     }

@@ -1,8 +1,8 @@
-/* nastaveni input v modalnich oknech */
+
 body {
     padding-top: 10px;
 }
-
+/* nastaveni input v modalnich oknech */
 .modal input {
     padding: 8px;
     width: 100%;
@@ -13,4 +13,16 @@ body {
     margin: 8px 0;
     padding: 8px;
     width: 100%;
+}
+
+a[class="clanek"] {
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+a[class="clanek"]:hover {
+    background-color: lightgray;
 }

@@ -69,7 +69,8 @@ if (isset($_POST["action"])) {
 $prihlInfo["prihlasen"] = $prihlaseni->jePrihlasen();
 if($prihlInfo["prihlasen"]) {
     $pr = $prihlaseni->prihlasenyInfo();
-    $prihlInfo["uzivatel"] = $pr["login"] . " (" . $pr["prava"] . ")";
+    $prihlInfo["login"] = $pr["login"];
+    $prihlInfo["prava"] = $pr["prava"];
 }
 
 
@@ -99,6 +100,7 @@ $q = @$_REQUEST["q"];
 echo "tady mam požadovanou stránku dle hezkých url: $url a $g";
 */
 if(isset($input)){
+    $prihlInfo["page"] = $input;
     // vstup je spravny
     // ziskam index stranky
     $index = array_search($input, $pages);
