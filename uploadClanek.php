@@ -26,27 +26,18 @@ if(isset($_POST["action"]) && $_POST["action"] == "upload" && $_FILES["pdf"]["si
             $db = new Database();
             $usr = $prihlaseni->prihlasenyInfo();
 
-          /*  echo $file["error"] . "<br>";
-            echo $_POST["nazev"] . "<br>";
-            echo $_POST["autori"] . "<br>";
-            echo $_POST["abstract"] . "<br>";
-            echo $file["tmp_name"] . "<br>";
-            echo $file["name"] . "<br>";
-            echo $file["size"] . "<br>";
-            echo $usr["login"] . "<br>";
-*/
-
             $currentdir = getcwd();
             $target = $currentdir .'/uploads/' . basename($file["name"]);
-           // echo $target . "<br>";
             move_uploaded_file($file["tmp_name"], $target);
 
-            echo $db->addClanek($_POST["nazev"], $_POST["autori"], $_POST["abstract"], $file["type"], $file["name"], $target, $usr["login"]);
+            $ret = $db->addClanek($_POST["nazev"], $_POST["autori"], $_POST["abstract"], $file["type"], $file["name"], $target, $usr["login"]);
 
-            //unlink($target);
+            unlink($target);
+
+            echo $ret;
         }
         else{
-            echo "fuck";
+            echo "Soubor není .pdf, odmítnuto.";
         }
     }
 }

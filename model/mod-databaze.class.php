@@ -102,25 +102,6 @@ class Database {
      */
     public function addClanek($nazev, $autori, $abstract, $koncovka, $nazev_pdf, $filePath, $login){
         try {
-
-            $sql = "INSERT INTO PRISPEVKY(nazev, autori, abstract, koncovka, nazev_pdf, UCTY_login) VALUES (:nazev, :autori, :abstract, :koncovka, :nazev_pdf, :login)";
-            $sth = $this->db->prepare($sql);
-
-            $sth->bindParam(':nazev', $nazev);
-            $sth->bindParam(':autori', $autori);
-            $sth->bindParam(':abstract', $abstract);
-            $sth->bindParam(':koncovka', $koncovka);
-            $sth->bindParam(':nazev_pdf', $nazev_pdf);
-            //$sth->bindParam(':pdf', $fs, PDO::PARAM_LOB);
-            $sth->bindParam(':login', $login);
-            //$this->db->beginTransaction();
-            return $sth->execute();
-
-
-
-
-           /* //return $nazev . "<br>" . $autori . "<br>" . $abstract . "<br>" . $koncovka . "<br>" . $nazev_pdf . "<br>" . $filePath . "<br>" . $login;
-
             $fs = fopen($filePath, "rb");
 
             $sql = "INSERT INTO PRISPEVKY(nazev, autori, abstract, koncovka, nazev_pdf, pdf, UCTY_login) VALUES (:nazev, :autori, :abstract, :koncovka, :nazev_pdf, :pdf, :login)";
@@ -133,16 +114,16 @@ class Database {
             $sth->bindParam(':nazev_pdf', $nazev_pdf);
             $sth->bindParam(':pdf', $fs, PDO::PARAM_LOB);
             $sth->bindParam(':login', $login);
-            //$this->db->beginTransaction();
-            $ret = $sth->execute();
-            //$this->db->commit();
+            $this->db->beginTransaction();
+            $sth->execute();
+            $this->db->commit();
 
-        //    fclose($fs);
+            fclose($fs);
 
-            return $ret;*/
+            return "ok";
 
         } catch (Exception $e) {
-            return "chyba"; //chyba v pozadavku
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
         }
     }
 
@@ -172,19 +153,7 @@ class Database {
         return $data;
     }
 
-    /**
-     *  Vraci vsechny clanky v db daneho uzivatele.
-     *  @param string $login    Login uzivatele.
-     *  @return array           Vysledek dotazu na clanky uzivatele.
-     */
-    public function getId($login){
-        $sth = $this->db->prepare("SELECT * FROM PRISPEVKY
-               WHERE UCTY_login LIKE :login");
-        $sth->bindParam(':login', $login);
-        $sth->execute();
-        $data = $sth->fetchAll();
-        return $data;
-    }
+
 
 }
 

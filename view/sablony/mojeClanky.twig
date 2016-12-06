@@ -19,7 +19,7 @@
                 <!-- Modal up formular pro pridani clanku -->
                 <div class="modal fade" id="uploadWindow" role="dialog">
                     <div class="modal-dialog modal-lg">
-                        <form class="modal-content animate" action="uploadClanek.php" method="post" enctype="multipart/form-data">
+                        <form name="clanekUploadForm" class="modal-content animate" onsubmit="return tryToUploadClanek()" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label><b>Název příspěvku</b></label>
@@ -31,15 +31,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="abstract"><b>Abstract</b></label>
-                                    <textarea class="form-control" name="abstract" rows="5"></textarea>
+                                    <textarea class="form-control" name="abstract" rows="5" required></textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <div>
                                         <label><b>PDF</b></label>
                                     </div>
-                                    <label class="btn btn-default btn-file">
-                                        Vybrat soubor <input name="pdf" type="file" id="pdf" accept="application/pdf" style="display: none;">
+                                    <!-- style hacky kvuli zobrazeni hlasky diky required -->
+                                    <label class="btn btn-default btn-file" style="width: 100%;">
+                                        Vybrat soubor <input name="pdf" type="file" id="pdf" accept="application/pdf" style="width: 0.1px;	height: 0.1px;	opacity: 0;	overflow: hidden;	position: absolute; z-index: -1;" required>
                                     </label>
                                 </div>
 
@@ -82,9 +83,9 @@
                                 {{ clanek.abstract }}
                             </div>
                             <div class="col-sm-2">
-                                <button class="btn btn-block btn-danger">Smazat</button>
-                                <button class="btn btn-block btn-info">Editovat</button>
-                                <button class="btn btn-block btn-success">Otevřít pdf</button>
+                                <button class="btn btn-block btn-danger" onclick="deleteClanek({{ clanek.id_prispevku }})">Smazat</button>
+                                <button class="btn btn-block btn-info" onclick="editClanek({{ clanek.id_prispevku }})">Editovat</button>
+                                <button class="btn btn-block btn-success" onclick="openPdfClanek({{ clanek.id_prispevku }})">Otevřít pdf</button>
 
                             </div>
                         </a>
