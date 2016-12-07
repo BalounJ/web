@@ -12,7 +12,7 @@
         <h2>Schválené články</h2>
         {% for clanek in schvaleneClanky %}
             <div class="row">
-                <a href="uploads/balounj_generovani-nahodnych-cisel.pdf" class="clanek">
+              <!--  <a href="uploads/balounj_generovani-nahodnych-cisel.pdf" class="clanek">
                     <div class="col-sm-4">
                                 <h3>{{ clanek.nazev }}</h3>
                                 <h4>{{ clanek.autori }}</h4>
@@ -21,7 +21,23 @@
                     <div class="col-sm-8">
                                 {{ clanek.abstract }}
                     </div>
-                </a>
+                </a>-->
+
+                <form action="clanekOper.php" method="post" target="_blank">
+                    <input type="hidden" name="id" value="{{ clanek.id_prispevku }}">
+                    <button class="clanek" type="submit" name="action" value="showPDF">
+                        <div class="col-sm-4">
+                            <h3>{{ clanek.nazev }}</h3>
+                            <h4>{{ clanek.autori }}</h4>
+                            Hodnocení: {{ clanek.hodnoceni }}
+                        </div>
+                        <div class="col-sm-8">
+                            {{ clanek.abstract }}
+                        </div>
+
+                    </button>
+                </form>
+
             </div>
         {% endfor %}
 

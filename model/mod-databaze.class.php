@@ -98,7 +98,7 @@ class Database {
     /**
      *  Vytvori v databazi novy clanek.
      *
-     *  @return boolean         zda byl pridan
+     *  @return          zda byl pridan
      */
     public function addClanek($nazev, $autori, $abstract, $koncovka, $nazev_pdf, $filePath, $login){
         try {
@@ -153,6 +153,89 @@ class Database {
         return $data;
     }
 
+    /**
+     *  Vraci clanek v db podle id.
+     *  @param int $id    id clanku
+     *  @return            Vysledek dotazu na clanky uzivatele.
+     */
+    public function getClanek($id){
+        $sth = $this->db->prepare("SELECT * FROM PRISPEVKY
+               WHERE id_prispevku = :id");
+        $sth->bindParam(':id', $id);
+        $sth->execute();
+        $data = $sth->fetch();
+        return $data;
+    }
+
+    /**
+     *  Smaze clanek v db podle id.
+     *  @param int $id    id clanku
+     *  @return            Vysledek dotazu na smazani clanku.
+     */
+    public function deleteClanek($id){
+        try {
+            $sth = $this->db->prepare("DELETE FROM PRISPEVKY
+               WHERE id_prispevku = :id");
+            $sth->bindParam(':id', $id);
+            $sth->execute();
+
+            return "ok";
+        }
+        catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Vytvori v databazi novy clanek.
+     *
+     *  @return          zda byl editovan
+     */
+    public function editClanek($id, $file, $nazev, $autori, $abstract, $koncovka, $nazev_pdf, $filePath){
+        try {
+            if($file) {
+                $fs = fopen($filePath, "rb");
+                $sql = "UPDATE PRISPEVKY 
+                          SET nazev=:nazev,
+                            autori=:autori,
+                            abstract=:abstract,
+                            koncovka=:koncovka,
+                            nazev_pdf=:nazev_pdf,
+                            pdf=:pdf
+                          WHERE 
+                            id_prispevku=:id;";
+            }
+            else {
+                $sql = "UPDATE PRISPEVKY 
+                          SET nazev=:nazev,
+                            autori=:autori,
+                            abstract=:abstract
+                          WHERE 
+                            id_prispevku=:id;";
+            }
+            $sth = $this->db->prepare($sql);
+
+            $sth->bindParam(':nazev', $nazev);
+            $sth->bindParam(':autori', $autori);
+            $sth->bindParam(':abstract', $abstract);
+            $sth->bindParam(':id', $id);
+            if($file) {
+                $sth->bindParam(':koncovka', $koncovka);
+                $sth->bindParam(':nazev_pdf', $nazev_pdf);
+                $sth->bindParam(':pdf', $fs, PDO::PARAM_LOB);
+            }
+            $this->db->beginTransaction();
+            $sth->execute();
+            $this->db->commit();
+            if($file) {
+                fclose($fs);
+            }
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
 
 
 }

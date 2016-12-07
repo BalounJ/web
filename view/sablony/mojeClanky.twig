@@ -44,7 +44,7 @@
                                     </label>
                                 </div>
 
-                                <button class="btn btn-success" type=submit">Zaregistrovat se</button>
+                                <button class="btn btn-success" type=submit">Přidat článek</button>
                                 <button class="btn btn-danger" type="button" data-dismiss="modal">Zrušit</button>
                             </div>
                             <input type="hidden" name="action" value="upload">
@@ -53,6 +53,8 @@
                 </div>
             </div>
         </div>
+
+
         <div class="row">
             <div class="col-sm-12">
                 <h2>Přehled</h2>
@@ -84,14 +86,53 @@
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-block btn-danger" onclick="deleteClanek({{ clanek.id_prispevku }})">Smazat</button>
-                                <button class="btn btn-block btn-info" onclick="editClanek({{ clanek.id_prispevku }})">Editovat</button>
-                                <button class="btn btn-block btn-success" onclick="openPdfClanek({{ clanek.id_prispevku }})">Otevřít pdf</button>
-
+                                <button class="btn btn-block btn-info" data-toggle="modal" data-target="#editWindow" onclick="prepareForEdit({{ clanek.id_prispevku }})">Editovat</button>
+                                <form action="clanekOper.php" method="post" target="_blank">
+                                    <input type="hidden" name="id" value="{{ clanek.id_prispevku }}">
+                                    <button class="btn btn-block btn-success" type="submit" name="action" value="showPDF" style="margin-top: 5px">Otevřít pdf</button>
+                                </form>
                             </div>
                         </a>
 
                     </div>
                 {% endfor %}
+
+                <!-- Modal up formular pro editaci clanku -->
+                <div class="modal fade" id="editWindow" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <form name="clanekEditForm" class="modal-content animate" onsubmit="return tryToEditClanek()" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label><b>Název příspěvku</b></label>
+                                    <input type="text" placeholder="Zadejte název příspěvku" name="nazev" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><b>Autoři</b></label>
+                                    <input type="text" placeholder="Zadejte autory" name="autori" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="abstract"><b>Abstract</b></label>
+                                    <textarea class="form-control" name="abstract" rows="5" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        <label><b>PDF</b></label>
+                                    </div>
+                                    <!-- style hacky kvuli zobrazeni hlasky diky required -->
+                                    <label class="btn btn-default btn-file" style="width: 100%;">
+                                        Vybrat soubor <input name="pdf" type="file" id="pdf" accept="application/pdf" style="width: 0.1px;	height: 0.1px;	opacity: 0;	overflow: hidden;	position: absolute; z-index: -1;" >
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-success" type=submit">Upravit článek</button>
+                                <button class="btn btn-danger" type="button" data-dismiss="modal">Zrušit</button>
+                            </div>
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id">
+                        </form>
+                    </div>
+                </div>
 
 
             </div>

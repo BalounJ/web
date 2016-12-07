@@ -14,15 +14,17 @@ body {
     padding: 8px;
     width: 100%;
 }
-
-a[class="clanek"] {
+/*      musi byt ve style aby prekryl bootstrap
+.clanek {
+    border: none;
     padding: 10px;
     border-radius: 5px;
     display: inline-block;
     width: 100%;
     text-decoration: none;
     color: inherit;
+    text-align: center;
 }
-a[class="clanek"]:hover {
+.clanek:hover {
     background-color: lightgray;
-}
+}*/
