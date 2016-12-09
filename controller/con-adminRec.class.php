@@ -6,7 +6,7 @@
  * Time: 15:49
  */
 
-class ConAdministrace {
+class ConAdminRec {
 
     public function __construct() {
 
@@ -31,15 +31,35 @@ class ConAdministrace {
         $data["success"] = "";
       $data["page"] = "uvod";
       */
+
+        $data["titulek"] = "Správa recenzí";
+
         include_once("model/mod-databaze.class.php");
         $db = new Database();
+       // $data["schvalene"] = $db->getSchvaleneClanky();   neni treba
+        $clVR = $db->getVRizeniClanky();
+        $clankyVRizSRec = array();
+        $i = 0;
+        foreach ($clVR as $clanek) {                //vytvorim pole clanku se svymi recenzemi
+            $recCl = $db->getRecenzeClanku($clanek["id_prispevku"]);
+            sizeof($recCl);
 
-        $data["titulek"] = "Správa uživatelů";
-        $data["ucty"] = $db->getUcty();
+            $clanek["pocetRecenzi"] = sizeof($recCl);
 
-        include("view/view-administrace.class.php");
+            $clanek["recenze"] = $recCl;
+
+            $clankyVRizSRec[$i] = $clanek;
+            $i++;
+        }
+
+        $data["vRizeni"] = $clankyVRizSRec;
+
+       // $data["odmitnute"] = $db->getOdmitnuteClanky();   neni treba
+
+
+        include("view/view-adminRec.class.php");
         // predam data sablone a ziskam jejich vizualizaci
-        $html = ViewAdministrace::getTemplate($data);
+        $html = ViewAdminRec::getTemplate($data);
         // vratim vysledny vzhled webu
         return $html;
     }

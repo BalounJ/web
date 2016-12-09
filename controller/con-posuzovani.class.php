@@ -18,7 +18,7 @@ class ConPosuzovani {
      */
     public function getResult($prihlInfo) {
 
-        if($prihlInfo["prihlasen"] != true or ($prihlInfo["prava"] != "admin" and $prihlInfo["prava"] != "recenzent")) {
+        if($prihlInfo["prihlasen"] != true or $prihlInfo["prava"] != "recenzent" or $prihlInfo["blokovan"] != "n") {
             // uzivatel nema opravneni zobrazit stranku
             header('Location: index.php');
             die();

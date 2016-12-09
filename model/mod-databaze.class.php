@@ -140,6 +140,43 @@ class Database {
     }
 
     /**
+     *  Vraci vsechny odmitnute clanky v db.
+     *  @return array           Vysledek dotazu na clanky.
+     */
+    public function getOdmitnuteClanky(){
+        $sth = $this->db->prepare("SELECT * FROM PRISPEVKY
+               WHERE stav LIKE 'odmítnuto'");
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
+
+    /**
+     *  Vraci vsechny clanky v rizeni v db.
+     *  @return array           Vysledek dotazu na clanky.
+     */
+    public function getVRizeniClanky(){
+        $sth = $this->db->prepare("SELECT * FROM PRISPEVKY
+               WHERE stav LIKE 'v recenzním řízení'");
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
+
+    /**
+     *  Vraci vsechny recenze k clanku s id v db.
+     *  @return array           Vysledek dotazu na clanky.
+     */
+    public function getRecenzeClanku($id){
+        $sth = $this->db->prepare("SELECT * FROM RECENZE
+               WHERE PRISPEVKY_id_prispevku = :id");
+        $sth->bindParam(':id', $id);
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
+
+    /**
      *  Vraci vsechny clanky v db daneho uzivatele.
      *  @param string $login    Login uzivatele.
      *  @return array           Vysledek dotazu na clanky uzivatele.
@@ -187,7 +224,7 @@ class Database {
     }
 
     /**
-     *  Vytvori v databazi novy clanek.
+     *  Zedituje clanek nastavi stav v recenznim rizeni a vsechny souvisejici recenze na zaadano.
      *
      *  @return          zda byl editovan
      */
@@ -201,7 +238,8 @@ class Database {
                             abstract=:abstract,
                             koncovka=:koncovka,
                             nazev_pdf=:nazev_pdf,
-                            pdf=:pdf
+                            pdf=:pdf,
+                            stav='v recenzním řízení'
                           WHERE 
                             id_prispevku=:id;";
             }
@@ -209,7 +247,8 @@ class Database {
                 $sql = "UPDATE PRISPEVKY 
                           SET nazev=:nazev,
                             autori=:autori,
-                            abstract=:abstract
+                            abstract=:abstract,
+                            stav='v recenzním řízení'
                           WHERE 
                             id_prispevku=:id;";
             }
@@ -230,6 +269,15 @@ class Database {
             if($file) {
                 fclose($fs);
             }
+            //zeditovan ted zmenit recenze
+
+            $rcz = $this->db->prepare("UPDATE RECENZE 
+                          SET stav='zadáno'
+                          WHERE 
+                            PRISPEVKY_id_prispevku=:id;");
+            $rcz->bindParam(':id', $id);
+            $rcz->execute();
+
             return "ok";
 
         } catch (Exception $e) {
@@ -237,6 +285,174 @@ class Database {
         }
     }
 
+
+    /**
+     *  Vraci vsechny recenzenty v db.
+     *  @return array           Vysledek dotazu na recenzenty.
+     */
+    public function getRecenzenti(){
+        $sth = $this->db->prepare("SELECT * FROM UCTY
+               WHERE prava LIKE 'recenzent'");
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
+
+    /**
+     *  zada recenzi
+     *  @return array           Vysledek dotazu na recenzenty.
+     */
+    public function pridelRecenzi($idPrispevku, $loginRec){
+        try {
+            $sql = "INSERT INTO RECENZE(PRISPEVKY_id_prispevku, UCTY_login) VALUES (:idPrispevku, :loginRec)";
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':idPrispevku', $idPrispevku);
+            $sth->bindParam(':loginRec', $loginRec);
+            $sth->execute();
+            return "ok";
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  zada recenzi
+     *  @return array           Vysledek dotazu na recenzenty.
+     */
+    public function smazRecenzi($idRecenze){
+        try {
+            $sth = $this->db->prepare("DELETE FROM RECENZE
+               WHERE id_recenze = :id");
+            $sth->bindParam(':id', $idRecenze);
+            $sth->execute();
+
+            return "ok";
+        }
+        catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+
+    }
+
+    /**
+     *  Prepne clanek do stavu schvaleno.
+     *
+     *  @return          zda byl schvalen
+     */
+    public function prijmoutClanek($id){
+        try {
+            $sql = "UPDATE PRISPEVKY 
+                          SET stav='schváleno'
+                          WHERE 
+                            id_prispevku=:id;";
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':id', $id);
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Prepne clanek do stavu odmitnuto.
+     *
+     *  @return          zda byl odmitnut
+     */
+    public function odmitnoutClanek($id){
+        try {
+            $sql = "UPDATE PRISPEVKY 
+                          SET stav='odmítnuto'
+                          WHERE 
+                            id_prispevku=:id;";
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':id', $id);
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Zmeni prava uzivatele.
+     *
+     *  @return          zda byla zmenena
+     */
+    public function zmenPrava($login, $prava){
+        try {
+            $sql = "UPDATE UCTY 
+                          SET prava=:prava
+                          WHERE 
+                            login=:login;";
+
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':prava', $prava);
+            $sth->bindParam(':login', $login);
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Odblokuje ucet.
+     *
+     *  @return          zda byla zmenena
+     */
+    public function odblokujUcet($login){
+        try {
+            $sql = "UPDATE UCTY 
+                          SET blokovan='n'
+                          WHERE 
+                            login=:login;";
+
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':login', $login);
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Zablokuje ucet.
+     *
+     *  @return          zda byla zmenena
+     */
+    public function blokujUcet($login){
+        try {
+            $sql = "UPDATE UCTY 
+                          SET blokovan='y'
+                          WHERE 
+                            login=:login;";
+
+            $sth = $this->db->prepare($sql);
+            $sth->bindParam(':login', $login);
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
+     *  Vraci vsechny uzivatele v db.
+     *  @return array           Vysledek dotazu na uziv.
+     */
+    public function getUcty(){
+        $sth = $this->db->prepare("SELECT * FROM UCTY");
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
 
 }
 

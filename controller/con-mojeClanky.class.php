@@ -18,7 +18,7 @@ class ConMojeClanky {
      */
     public function getResult($prihlInfo) {
 
-        if($prihlInfo["prihlasen"] != true) {
+        if($prihlInfo["prihlasen"] != true or $prihlInfo["blokovan"] != "n") {
             // uzivatel nema opravneni zobrazit stranku
             header('Location: index.php');
             die();

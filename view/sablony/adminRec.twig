@@ -1,0 +1,153 @@
+{% extends "zaklad.twig" %}
+
+{# Prekryti bloku Obsah v predkovi #}
+{% block obsah %}
+    {% if prihlasen == true %}
+        <article>
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>{{ titulek }}</h1>
+                Zde naleznete seznam článků v recenzním řízení.
+            </div>
+        </div>
+        <h2>Články v recenzním řízení</h2>
+        <div style="overflow-x:auto;">  <!--responsivita-->
+            <table class="table table-bordered">
+                <thead>
+                <tr class="active">
+                    <th rowspan="2">Název</th>
+                    <th rowspan="2">Autoři</th>
+                    <th colspan="7">Recenze</th>
+                    <th rowspan="2">Akce</th>
+                </tr>
+                <tr class="active">
+                    <th>Recenzent</th>
+                    <th>Stav</th>
+                    <th>Orig.</th>
+                    <th>Téma</th>
+                    <th>Kval.</th>
+                    <th>Dop.</th>
+                    <th>Vymazat</th>
+                </tr>
+                </thead>
+                <tbody>
+
+        {% for clanek in vRizeni %}
+            <form action="clanekOper.php" method="post" target="_blank">
+                <input type="hidden" name="id" value="{{ clanek.id_prispevku }}">
+                <tr>
+                    <td rowspan="3">{{ clanek.nazev }}</td>
+                    <td rowspan="3">{{ clanek.autori }}</td>
+
+
+                {% if clanek.pocetRecenzi > 0 %}
+                    <td>{{ clanek.recenze[0].UCTY_login }}</td>
+                    <td>{{ clanek.recenze[0].stav }}</td>
+                    <td>{{ clanek.recenze[0].originalita }}</td>
+                    <td>{{ clanek.recenze[0].tema }}</td>
+                    <td>{{ clanek.recenze[0].kvalita }}</td>
+                    <td>{{ clanek.recenze[0].prijmout }}</td>
+                    <td>
+                        <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[0].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
+                    </td>
+                {% else %}
+                    <td colspan="7">
+                        <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#recenzeAddWindow" onclick="prepareForRec({{ clanek.id_prispevku }})">Přidělit recenzi</button>
+                    </td>
+                {% endif %}
+
+                    <td>
+                        <button type="button" class="btn btn-block btn-danger" onclick="odmitnout({{ clanek.id_prispevku }})">Odmítnout</button>
+                    </td>
+                </tr>
+                <tr>
+                    {% if clanek.pocetRecenzi > 1 %}
+                        <td>{{ clanek.recenze[1].UCTY_login }}</td>
+                        <td>{{ clanek.recenze[1].stav }}</td>
+                        <td>{{ clanek.recenze[1].originalita }}</td>
+                        <td>{{ clanek.recenze[1].tema }}</td>
+                        <td>{{ clanek.recenze[1].kvalita }}</td>
+                        <td>{{ clanek.recenze[1].prijmout }}</td>
+                        <td>
+                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[0].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    {% else %}
+                        <td colspan="7">
+                            <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#recenzeAddWindow" onclick="prepareForRec({{ clanek.id_prispevku }})">Přidělit recenzi</button>
+                        </td>
+                    {% endif %}
+
+
+                    <td>
+                        <button type="submit" class="btn btn-block btn-info" type="submit" name="action" value="showPDF">Otevřít pdf</button>
+                    </td>
+                </tr>
+                <tr>
+                    {% if clanek.pocetRecenzi > 2 %}
+                        <td>{{ clanek.recenze[2].UCTY_login }}</td>
+                        <td>{{ clanek.recenze[2].stav }}</td>
+                        <td>{{ clanek.recenze[2].originalita }}</td>
+                        <td>{{ clanek.recenze[2].tema }}</td>
+                        <td>{{ clanek.recenze[2].kvalita }}</td>
+                        <td>{{ clanek.recenze[2].prijmout }}</td>
+                        <td>
+                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[0].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    {% else %}
+                        <td colspan="7">
+                            <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#recenzeAddWindow" onclick="prepareForRec({{ clanek.id_prispevku }})">Přidělit recenzi</button>
+                        </td>
+                    {% endif %}
+
+                    <td>
+                        <button type="button" class="btn btn-block btn-success" onclick="prijmout({{ clanek.id_prispevku }})">Přijmout</button>
+                    </td>
+                </tr>
+            </form>
+        {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        </article>
+
+
+        <!-- Modal up formular pro prirazeni recenze -->
+        <div class="modal fade" id="recenzeAddWindow" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <form name="recenzeAddForm" class="modal-content animate" onsubmit="return tryToAddRec()" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label><b>Název příspěvku</b></label>
+                            <input type="text" name="nazev" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label><b>Autoři</b></label>
+                            <input type="text" name="autori" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="abstract"><b>Abstract</b></label>
+                            <textarea class="form-control" name="abstract" rows="5" ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <div>
+                                <label><b>Recenzent k přiřazení</b></label>
+                            </div>
+                            <!--  -->
+                            <select class="form-control" name="recenzent">
+
+                            </select>
+                        </div>
+
+                        <button class="btn btn-success" type=submit">Přidělit</button>
+                        <button class="btn btn-danger" type="button" data-dismiss="modal">Zrušit</button>
+                    </div>
+                    <input type="hidden" name="action" value="addRec">
+                    <input type="hidden" name="idPrispevku">
+                </form>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}

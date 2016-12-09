@@ -71,6 +71,7 @@ if($prihlInfo["prihlasen"]) {
     $pr = $prihlaseni->prihlasenyInfo();
     $prihlInfo["login"] = $pr["login"];
     $prihlInfo["prava"] = $pr["prava"];
+    $prihlInfo["blokovan"] = $pr["blokovan"];
 }
 
 

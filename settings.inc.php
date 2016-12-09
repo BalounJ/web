@@ -39,4 +39,8 @@ $pages[4] = "administrace";
 $controllers[4] = "controller/con-administrace.class.php";
 $objects[4] = "ConAdministrace";
 
+$pages[5] = "adminRec";
+$controllers[5] = "controller/con-adminRec.class.php";
+$objects[5] = "ConAdminRec";
+
 ?>
