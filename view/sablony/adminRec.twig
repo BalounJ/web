@@ -69,7 +69,7 @@
                         <td>{{ clanek.recenze[1].kvalita }}</td>
                         <td>{{ clanek.recenze[1].prijmout }}</td>
                         <td>
-                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[0].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
+                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[1].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
                         </td>
                     {% else %}
                         <td colspan="7">
@@ -91,7 +91,7 @@
                         <td>{{ clanek.recenze[2].kvalita }}</td>
                         <td>{{ clanek.recenze[2].prijmout }}</td>
                         <td>
-                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[0].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
+                            <button type="button" class="btn btn-block btn-danger" onclick="deleteRec({{ clanek.recenze[2].id_recenze }})"><span class="glyphicon glyphicon-remove"></span></button>
                         </td>
                     {% else %}
                         <td colspan="7">
@@ -127,7 +127,7 @@
                         </div>
                         <div class="form-group">
                             <label for="abstract"><b>Abstract</b></label>
-                            <textarea class="form-control" name="abstract" rows="5" ></textarea>
+                            <textarea class="form-control" name="abstract" rows="5" readonly></textarea>
                         </div>
 
                         <div class="form-group">

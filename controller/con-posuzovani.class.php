@@ -35,6 +35,25 @@ class ConPosuzovani {
 
         $data["titulek"] = "Moje recenze";
 
+        include_once("model/mod-databaze.class.php");
+        $db = new Database();
+        $recArr = $db->getZadaneRecenze($prihlInfo["login"]);
+        $recToData = array();
+
+        $i = 0;
+        foreach ($recArr as $rec) {                //vytvorim pole rec. s hodnotami o clancich
+            $clanek = $db->getClanek($rec["PRISPEVKY_id_prispevku"]);
+
+            $rec["nazev"] = $clanek["nazev"];
+            $rec["autori"] = $clanek["autori"];
+            $rec["abstract"] = $clanek["abstract"];
+
+            $recToData[$i] = $rec;
+            $i++;
+        }
+
+        $data["zadaneRecenze"] = $recToData;
+
         include("view/view-posuzovani.class.php");
         // predam data sablone a ziskam jejich vizualizaci
         $html = ViewPosuzovani::getTemplate($data);

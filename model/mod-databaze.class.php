@@ -444,6 +444,40 @@ class Database {
     }
 
     /**
+     *  Zablokuje ucet.
+     *
+     *  @return          zda byla zmenena
+     */
+    public function odevzdejRecenzi($id_recenze, $originalita, $tema, $kvalita, $prijmout, $info){
+        try {
+            $sql = "UPDATE RECENZE 
+                          SET originalita=:originalita,
+                          tema=:tema,
+                          kvalita=:kvalita,
+                          prijmout=:prijmout,
+                          info=:info,
+                          stav='odevzdáno'
+                          WHERE 
+                            id_recenze=:id_recenze;";
+
+            $sth = $this->db->prepare($sql);
+
+            $sth->bindParam(':id_recenze', $id_recenze);
+            $sth->bindParam(':originalita', $originalita);
+            $sth->bindParam(':tema', $tema);
+            $sth->bindParam(':kvalita', $kvalita);
+            $sth->bindParam(':prijmout', $prijmout);
+            $sth->bindParam(':info', $info);
+
+            $sth->execute();
+            return "ok";
+
+        } catch (Exception $e) {
+            return "Chyba při práci s databází."; //. $e->getMessage(); //chyba v pozadavku
+        }
+    }
+
+    /**
      *  Vraci vsechny uzivatele v db.
      *  @return array           Vysledek dotazu na uziv.
      */
@@ -454,6 +488,17 @@ class Database {
         return $data;
     }
 
+    /**
+     *  Vraci vsechny recenze pro vyplneni daneho loginu v db.
+     *  @return array           Vysledek dotazu na uziv.
+     */
+    public function getZadaneRecenze($login){
+        $sth = $this->db->prepare("SELECT * FROM RECENZE WHERE UCTY_login LIKE :login AND stav LIKE 'zadáno'");
+        $sth->bindParam(':login', $login);
+        $sth->execute();
+        $data = $sth->fetchAll();
+        return $data;
+    }
 }
 
 
