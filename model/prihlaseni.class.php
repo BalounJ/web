@@ -23,6 +23,12 @@ class Prihlaseni{
     }
 
     public function prihlasUzivatele($login, $heslo){
+        $infoLog=$this->db->userInfo($login);
+        if($infoLog != null && $infoLog["blokovan"] != "n") {
+            return "blokovan";
+        }
+
+
         if($this->db->isLoginPasswordCorrect($login, $heslo)){
             $_SESSION["prihlasen"]=$login; // zahajim session uzivatele
             return true;

@@ -27,13 +27,18 @@ $prihlInfo = array();
 if (isset($_POST["action"])) {
     if($_POST["action"]=="login" and !$prihlaseni->jePrihlasen()){
         //$prihlaseni->odhlasUzivatele();
-        if($prihlaseni->prihlasUzivatele($_POST["login"], $_POST["pass"])) {
-            //uspesne prihlasen
-            $prihlInfo["success"] = "Přihlášení jako " . $_POST["login"] . " bylo úspěšné.";
+        $prihlStav = $prihlaseni->prihlasUzivatele($_POST["login"], $_POST["pass"]);
+        if ($prihlStav === "blokovan") {
+            $prihlInfo["danger"] = "Uživatel je blokován.";
         }
         else {
-            //neuspech pri prihlasovani
-            $prihlInfo["danger"] = "Login a heslo nejsou správné, zkuste to prosím znovu.";
+            if ($prihlStav) {
+                //uspesne prihlasen
+                $prihlInfo["success"] = "Přihlášení jako " . $_POST["login"] . " bylo úspěšné.";
+            } else {
+                //neuspech pri prihlasovani
+                $prihlInfo["danger"] = "Login a heslo nejsou správné, zkuste to prosím znovu.";
+            }
         }
     }
 
